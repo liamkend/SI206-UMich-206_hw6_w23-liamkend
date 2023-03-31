@@ -19,26 +19,15 @@ def load_json(filename):
 
 def write_json(filename, dict):
     with open(filename, 'w') as outFile:
-        outFile.write(json.dump(dict))
+        json.dump(dict, outFile)
 
 def get_swapi_info(url, params=None):
-    '''
-    Check whether the 'params' dictionary has been specified. Makes a request to access data with 
-    the 'url' and 'params' given, if any. If the request is successful, return a dictionary representation 
-    of the decoded JSON. If the search is unsuccessful, print out "Exception!" and return None.
-
-    Parameters
-    ----------
-    url (str): a url that provides information about entities in the Star Wars universe.
-    params (dict): optional dictionary of querystring arguments (default value is 'None').
-        
-
-    Returns
-    -------
-    dict: dictionary representation of the decoded JSON.
-    '''
-    
-    pass
+    try:
+        r = requests.get(url, params)
+        return json.loads(r.text)
+    except:
+        print("Exception!")
+        return None
 
 def cache_all_pages(people_url, filename):
     '''
@@ -111,6 +100,7 @@ class TestHomework6(unittest.TestCase):
         people = get_swapi_info(self.url)
         tie_ln = get_swapi_info("https://swapi.dev/api/vehicles", {"search": "tie/ln"})
         self.assertEqual(type(people), dict)
+        print(tie_ln['results'][0]["name"])
         self.assertEqual(tie_ln['results'][0]["name"], "TIE/LN starfighter")
         self.assertEqual(get_swapi_info("https://swapi.dev/api/pele"), None)
     
