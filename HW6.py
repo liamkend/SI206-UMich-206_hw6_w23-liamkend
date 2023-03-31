@@ -10,33 +10,16 @@ import os
 
 def load_json(filename):
     try:
-        inFile = open(filename, 'r')
-        data = inFile.read()
-        d = json.loads(data)
-        inFile.close()
+        with open(filename, 'r') as inFile:
+            data = inFile.read()
+            d = json.loads(data)
     except:
         d = {}
     return d
 
 def write_json(filename, dict):
-    '''
-    Encodes dict into JSON format and writes
-    the JSON to filename to save the search results
-
-    Parameters
-    ----------
-    filename: string
-        the name of the file to write a cache to
-    
-    dict: cache dictionary
-
-    Returns
-    -------
-    None
-        does not return anything
-    '''  
-
-    pass
+    with open(filename, 'w') as outFile:
+        outFile.write(json.dump(dict))
 
 def get_swapi_info(url, params=None):
     '''
@@ -54,7 +37,7 @@ def get_swapi_info(url, params=None):
     -------
     dict: dictionary representation of the decoded JSON.
     '''
-
+    
     pass
 
 def cache_all_pages(people_url, filename):
