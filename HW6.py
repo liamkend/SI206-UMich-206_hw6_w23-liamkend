@@ -29,22 +29,26 @@ def get_swapi_info(url, params=None):
         print("Exception!")
         return None
 
-def cache_all_pages(people_url, filename):
-    '''
-    1. Checks if the page number is found in the dict return by `load_json`
-    2. If the page number does not exist in the dictionary, it makes a request (using get_swapi_info)
-    3. Add the data to the dictionary (the key is the page number (Ex: page 1) and the value is the results).
-    4. Write out the dictionary to a file using write_json.
-    
-    Parameters
-    ----------
-    people_url (str): a url that provides information about the 
-    characters in the Star Wars universe (https://swapi.dev/api/people).
-    filename(str): the name of the file to write a cache to
-        
-    '''
+def cache_all_pages(people_url, filename):    
+    d = load_json(filename)
+    r = requests.get(people_url)
+    page = json.loads(r.text)
+    next = page.get('next')
+    num = 1
+    page_num = 'page 1'
 
-    pass
+    if page_num not in d:
+        d[page_num] = page.get('results')
+    
+    while next:
+        num += 1
+        page_num = "page " + str(num)
+        page = get_swapi_info(next)
+        if page_num not in d:
+            d[page_num] = page.get('results')
+        next = page.get('next')
+        
+    write_json(filename, d)
 
 def get_starships(filename):
     '''
