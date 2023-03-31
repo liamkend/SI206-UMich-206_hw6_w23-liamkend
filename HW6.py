@@ -26,7 +26,7 @@ def get_swapi_info(url, params=None):
         r = requests.get(url, params)
         return json.loads(r.text)
     except:
-        print("Exception!")
+        print('Exception!')
         return None
 
 def cache_all_pages(people_url, filename):    
@@ -42,7 +42,7 @@ def cache_all_pages(people_url, filename):
     
     while next:
         num += 1
-        page_num = "page " + str(num)
+        page_num = 'page ' + str(num)
         page = get_swapi_info(next)
         if page_num not in d:
             d[page_num] = page.get('results')
@@ -51,21 +51,19 @@ def cache_all_pages(people_url, filename):
     write_json(filename, d)
 
 def get_starships(filename):
-    '''
-    Access the starships url for each character (if any) and pass it to the get_swapi_info function 
-    to get data about a person's starship.
-    
-    Parameter
-    ----------
-    filename(str): the name of the cache file to read in 
-    
-    Returns
-    -------
-    dict: dictionary with the character's name as a key and a list of the name their 
-    starships as the value
-    '''
-
-    pass
+    d = load_json(filename)
+    sdict = {}
+    for page in d:
+        for character in d[page]:
+            name = character['name']
+            starships = character['starships']
+            l = []
+            for starship in starships:
+                s = get_swapi_info(starship)
+                l.append(s['name'])
+            if len(l) > 0:
+                sdict[name] = l
+    return sdict
 
 #################### EXTRA CREDIT ######################
 
