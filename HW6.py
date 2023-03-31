@@ -68,23 +68,19 @@ def get_starships(filename):
 #################### EXTRA CREDIT ######################
 
 def calculate_bmi(filename):
-    '''
-    Calculate each character's Body Mass Index (BMI) if their height and mass is known. With the metric 
-    system, the formula for BMI is weight in kilograms divided by height in meters squared. 
-    Since height is commonly measured in centimeters, an alternate calculation formula, 
-    dividing the weight in kilograms by the height in centimeters squared, and then multiplying 
-    the result by 10,000, can be used.
-
-    Parameter
-    ----------
-    filename(str): the name of the cache file to read in 
-    
-    Returns
-    -------
-    dict: dictionary with the name as a key and the BMI as the value
-    '''
-
-    pass
+    d = load_json(filename)
+    BMIdict = {}
+    for page in d:
+        for character in d[page]:
+            name = character['name']
+            height = character['height']
+            weight = character['mass']
+            if height != 'unknown' and weight != 'unknown':
+                height = float(height.replace(',', ''))
+                weight = float(weight.replace(',', ''))
+                BMI = (weight / (height * height)) * 10000
+                BMIdict[name] = round(BMI, 2)
+    return BMIdict
 
 class TestHomework6(unittest.TestCase):
     def setUp(self):
@@ -102,7 +98,6 @@ class TestHomework6(unittest.TestCase):
         people = get_swapi_info(self.url)
         tie_ln = get_swapi_info("https://swapi.dev/api/vehicles", {"search": "tie/ln"})
         self.assertEqual(type(people), dict)
-        print(tie_ln['results'][0]["name"])
         self.assertEqual(tie_ln['results'][0]["name"], "TIE/LN starfighter")
         self.assertEqual(get_swapi_info("https://swapi.dev/api/pele"), None)
     
