@@ -11,13 +11,12 @@ import os
 def load_json(filename):
     try:
         inFile = open(filename, 'r')
-        contents = inFile.read()
-        d = json.loads(contents)
+        data = inFile.read()
+        d = json.loads(data)
         inFile.close()
     except:
         d = {}
     return d
-
 
 def write_json(filename, dict):
     '''
